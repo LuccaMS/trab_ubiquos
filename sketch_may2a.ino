@@ -11,47 +11,14 @@
 
 HardwareSerial SerialPort(2);
 
-const char* ssid = "Anderson";
-const char* password = "cchr.org";
+//const char* ssid = "Anderson";
+//const char* password = "cchr.org";
 
 WebSocketsClient webSocket;
 WiFiMulti WiFiMulti;
 
-//const char* ssid = "lab120";
-//const char* password = "labredes120";
-
-void webSocketEvent(WStype_t type, uint8_t * payload, size_t length) {
-	switch(type) {
-		case WStype_DISCONNECTED:
-			//Serial.println("[WSc] Disconnected!\n");
-			break;
-		case WStype_CONNECTED:
-			//Serial.println("[WSc] Connected to url: %s\n", payload);
-
-			// send message to server when Connected
-			webSocket.sendTXT("Connected");
-			break;
-		case WStype_TEXT:
-			//Serial.println("[WSc] get text: %s\n", payload);
-
-			// send message to server
-			// webSocket.sendTXT("message here");
-			break;
-		case WStype_BIN:
-			//Serial.println("[WSc] get binary length: %u\n", length);
-			//hexdump(payload, length);
-
-			// send data to server
-			// webSocket.sendBIN(payload, length);
-			break;
-		case WStype_ERROR:			
-		case WStype_FRAGMENT_TEXT_START:
-		case WStype_FRAGMENT_BIN_START:
-		case WStype_FRAGMENT:
-		case WStype_FRAGMENT_FIN:
-			break;
-	}
-}
+const char* ssid = "lab120";
+const char* password = "labredes120";
 
 void setup() {
   Serial.begin(115200);
@@ -71,26 +38,14 @@ void setup() {
   SerialPort.flush();
   delay(1000);
 
-  /*
-  WiFi.begin(ssid, password);
 
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.println("Connecting to WiFi..");
-  }
-
-  Serial.println("");
-  Serial.println("WiFi connected.");
-  Serial.println(WiFi.localIP());*/
-  WiFiMulti.addAP("Anderson", "cchr.org");
+  WiFiMulti.addAP(ssid, password);
   while(WiFiMulti.run() != WL_CONNECTED) {
+    Serial.println("Não consegui conectar ao WIFI");
 		delay(100);
 	}
 
-  webSocket.begin("192.168.3.3", 999, "/");
-  //webSocket.beginSSL("192.168.3.3", 999);
-
-  webSocket.onEvent(webSocketEvent);
+  webSocket.begin("150.162.235.38", 999, "/");
 
   webSocket.setReconnectInterval(100);
 }
@@ -125,17 +80,7 @@ void loop(){
 
       uint16_t tamanho_dados = unpack_unsigned_short(primiero_tamanho, segundo_tamanho);
 
-      /*
-      Serial.print("Tamanho bytes: ");
-      Serial.print(primiero_tamanho);
-      Serial.print(" ");
-      Serial.println(segundo_tamanho);
-      Serial.print("Tamanho uint16_t: ");
-      Serial.println(tamanho_dados);
-      */
-
       if (tamanho_dados != 2516 && tamanho_dados != 10016 && tamanho_dados != 641) {
-        //O pacote a ser lido não é um pacote válido para as resoluções disponíveis
         Serial.print("Wrong size found !: ");
         return;
       }
@@ -153,7 +98,7 @@ void loop(){
       }
       
       if(webSocket.isConnected()){
-          Serial.println("Sending data to the websocket");
+          Serial.println("sending data to the websocket");
           webSocket.sendBIN(image_data,tamanho_dados - 16);
       }
 
