@@ -1,6 +1,5 @@
 #include <HardwareSerial.h>
 
-
 #include <WiFi.h>
 #include <WiFiMulti.h>
 #include <WebSocketsClient.h>
