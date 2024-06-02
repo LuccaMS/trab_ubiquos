@@ -10,14 +10,14 @@
 
 HardwareSerial SerialPort(2);
 
-//const char* ssid = "Anderson";
-//const char* password = "cchr.org";
+const char* ssid = "Anderson";
+const char* password = "cchr.org";
 
 WebSocketsClient webSocket;
 WiFiMulti WiFiMulti;
 
-const char* ssid = "lab120";
-const char* password = "labredes120";
+//const char* ssid = "lab120";
+//const char* password = "labredes120";
 
 void setup() {
   Serial.begin(115200);
@@ -44,7 +44,7 @@ void setup() {
 		delay(100);
 	}
 
-  webSocket.begin("150.162.235.38", 999, "/");
+  webSocket.begin("192.168.3.3", 999, "/");
 
   webSocket.setReconnectInterval(100);
 }
